@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,19 @@ public class GameStatusController {
             } catch (Exception e){
                 return new ResponseEntity(e.toString(), HttpStatus.BAD_REQUEST);
             }
+        }
+    }
+
+    @GetMapping("/GetGameStatuses")
+    public ResponseEntity<List<GameStatus>> GetGameStatuses(){
+        try {
+            Path path = Paths.get("games.json").toAbsolutePath();
+            String json = Files.readString(path, StandardCharsets.US_ASCII);
+            Gson gson = new Gson();
+            GameStatus[] games = gson.fromJson(json, GameStatus[].class);
+            return new ResponseEntity(Arrays.asList(games.clone()), HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity(Arrays.asList((new GameStatus[0]).clone()), HttpStatus.BAD_REQUEST);
         }
     }
 }
