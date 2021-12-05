@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 @RestController
 public class GameStatusController {
-    @GetMapping("/UpdateGameStatus")
-    public ResponseEntity<String> UpdateGameStatus(@RequestParam(value = "id", defaultValue = "IDNOTFOUND") String id){
+    @GetMapping("/SwitchGameStatus")
+    public ResponseEntity<String> SwitchGameStatus(@RequestParam(value = "id", defaultValue = "IDNOTFOUND") String id){
         if(id.equals("IDNOTFOUND")) return new ResponseEntity(id, HttpStatus.BAD_REQUEST);
         else{
             try {
@@ -51,14 +51,43 @@ public class GameStatusController {
         }
     }
 
-    @GetMapping("/GetGameStatuses")
-    public ResponseEntity<List<GameStatus>> GetGameStatuses(){
+    @GetMapping("/GetAllGameStatuses")
+    public ResponseEntity<List<GameStatus>> GetAllGameStatuses(){
         try {
             Path path = Paths.get("games.json").toAbsolutePath();
             String json = Files.readString(path, StandardCharsets.US_ASCII);
             Gson gson = new Gson();
             GameStatus[] games = gson.fromJson(json, GameStatus[].class);
             return new ResponseEntity(Arrays.asList(games.clone()), HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity(Arrays.asList((new GameStatus[0]).clone()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/GetFilteredGameStatuses")
+    public ResponseEntity<List<GameStatus>> GetFilteredGameStatuses(
+        @RequestParam(value = "searchParam") String searchParam
+    ){
+        try {
+            Path path = Paths.get("games.json").toAbsolutePath();
+            String json = Files.readString(path, StandardCharsets.US_ASCII);
+            Gson gson = new Gson();
+            GameStatus[] games = gson.fromJson(json, GameStatus[].class);
+            List<GameStatus> filteredList = Arrays.asList(games.clone());
+            if(!searchParam.isBlank()) {
+                for (int i = 0; i < filteredList.size(); i++) {
+                    boolean fitsSearch = false;
+                    GameStatus temp = filteredList.get(i);
+                    for(int j = 0; j < temp.getSearchTerms().length; j++){
+                        if(temp.getSearchTerms()[j].contains(searchParam)) fitsSearch = true;
+                    }
+                    if (!fitsSearch) {
+                        filteredList.remove(i);
+                        i--;
+                    }
+                }
+            }
+            return new ResponseEntity(filteredList, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity(Arrays.asList((new GameStatus[0]).clone()), HttpStatus.BAD_REQUEST);
         }
