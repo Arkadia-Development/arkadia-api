@@ -20,8 +20,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class GameStatusController {
     @GetMapping("/SwitchGameStatus")
-    public ResponseEntity<String> SwitchGameStatus(@RequestParam(value = "id", defaultValue = "IDNOTFOUND") String id){
-        if(id.equals("IDNOTFOUND")) return new ResponseEntity(id, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> SwitchGameStatus(
+            @RequestParam(value = "id", defaultValue = "IDNOTFOUND") String id,
+            @RequestParam(value = "secret", defaultValue = "NOSECRET") String secret
+    ){
+        if(!AuthorizationChecker.checkSecret(secret)) return new ResponseEntity("Nice try buddy ;)", HttpStatus.UNAUTHORIZED);
+        //what, you thought I'd just leave a sensitive secret lying around in a public github repo?
+        else if(id.equals("IDNOTFOUND")) return new ResponseEntity(id, HttpStatus.BAD_REQUEST);
         else{
             try {
                 Path path = Paths.get("games.json").toAbsolutePath();
