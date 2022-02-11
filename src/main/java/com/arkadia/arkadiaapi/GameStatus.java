@@ -2,11 +2,13 @@ package com.arkadia.arkadiaapi;
 
 public class GameStatus {
     private String id;
+    private String fullTitle;
     private boolean isWorking;
     private String[] searchTerms;
 
-    GameStatus(String id, boolean isWorking, String[] searchTerms){
+    GameStatus(String id, String fullTitle, boolean isWorking, String[] searchTerms){
         this.id = id;
+        this.fullTitle = fullTitle;
         this.isWorking = isWorking;
         this.searchTerms = searchTerms;
     }
@@ -14,6 +16,8 @@ public class GameStatus {
     public String getId(){
         return id;
     }
+
+    public String getFullTitle() { return fullTitle; }
 
     public boolean getIsWorking() {
         return isWorking;
@@ -24,6 +28,8 @@ public class GameStatus {
     public void setId(String id) {
         this.id = id;
     }
+
+    public void setFullTitle(String fullTitle) { this.fullTitle = fullTitle; }
 
     public void setIsWorking(boolean isWorking) {
         this.isWorking = isWorking;
