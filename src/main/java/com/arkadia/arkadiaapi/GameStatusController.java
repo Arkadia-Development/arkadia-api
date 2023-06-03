@@ -186,7 +186,7 @@ public class GameStatusController {
                 if (!found) {
                     return new ResponseEntity("Game with id " + id + " not found", HttpStatus.BAD_REQUEST);
                 }
-                String newJson = gson.toJson(games);
+                String newJson = gson.toJson(newGames);
                 FileWriter writer = new FileWriter(path.toFile());
                 writer.write(newJson);
                 writer.close();
