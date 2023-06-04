@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -21,8 +22,8 @@ import org.springframework.web.bind.annotation.*;
 public class GameStatusController {
     @GetMapping("/SwitchGameStatus")
     public ResponseEntity<String> SwitchGameStatus(
-            @RequestParam(value = "id", defaultValue = "IDNOTFOUND") String id,
-            @RequestParam(value = "secret", defaultValue = "NOSECRET") String secret
+        @RequestParam(value = "id", defaultValue = "IDNOTFOUND") String id,
+        @RequestParam(value = "secret", defaultValue = "NOSECRET") String secret
     ){
         if(!AuthorizationChecker.checkSecret(secret)) return new ResponseEntity("Nice try buddy ;)", HttpStatus.UNAUTHORIZED);
         //what, you thought I'd just leave a sensitive secret lying around in a public github repo?
@@ -95,6 +96,104 @@ public class GameStatusController {
             return new ResponseEntity(filteredList, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity(Arrays.asList((new GameStatus[0]).clone()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/AddGameStatus")
+    public ResponseEntity<String> AddGameStatus(
+        @RequestParam(value = "secret", defaultValue = "NOSECRET") String secret,
+        @RequestBody() GameStatus gameStatus
+    ) {
+        if(!AuthorizationChecker.checkSecret(secret)) return new ResponseEntity("Nice try buddy ;)", HttpStatus.UNAUTHORIZED);
+        else{
+            try {
+                Path path = Paths.get("games.json").toAbsolutePath();
+                String json = Files.readString(path, StandardCharsets.US_ASCII);
+                Gson gson = new Gson();
+                ArrayList<GameStatus> games = new ArrayList<GameStatus>(Arrays.asList(gson.fromJson(json, GameStatus[].class)));
+                games.add(gameStatus);
+
+                GameStatus[] gamesArr = new GameStatus[games.size()];
+                gamesArr = games.toArray(gamesArr);
+                String newJson = gson.toJson(gamesArr);
+                FileWriter writer = new FileWriter(path.toFile());
+                writer.write(newJson);
+                writer.close();
+                return new ResponseEntity("Game added", HttpStatus.OK);
+            } catch (Exception e){
+                return new ResponseEntity(e.toString(), HttpStatus.BAD_REQUEST);
+            }
+        }
+    }
+
+    @PutMapping("/UpdateGameStatus")
+    public ResponseEntity<String> UpdateGameStatus(
+        @RequestParam(value = "secret", defaultValue = "NOSECRET") String secret,
+        @RequestBody() GameStatus gameStatus
+    ) {
+        if(!AuthorizationChecker.checkSecret(secret)) return new ResponseEntity("Nice try buddy ;)", HttpStatus.UNAUTHORIZED);
+        else{
+            try {
+                Path path = Paths.get("games.json").toAbsolutePath();
+                String json = Files.readString(path, StandardCharsets.US_ASCII);
+                Gson gson = new Gson();
+                GameStatus[] games = gson.fromJson(json, GameStatus[].class);
+                boolean found = false;
+                for (int i = 0; i < games.length; i++) {
+                    if (games[i].getId().equals(gameStatus.getId())) {
+                        found = true;
+                        games[i] = gameStatus;
+                        break;
+                    }
+                }
+                if (!found) {
+                    return new ResponseEntity("Game with id " + gameStatus.getId() + " not found", HttpStatus.BAD_REQUEST);
+                }
+                String newJson = gson.toJson(games);
+                FileWriter writer = new FileWriter(path.toFile());
+                writer.write(newJson);
+                writer.close();
+                return new ResponseEntity("Game updated", HttpStatus.OK);
+            } catch (Exception e){
+                return new ResponseEntity(e.toString(), HttpStatus.BAD_REQUEST);
+            }
+        }
+    }
+
+    @DeleteMapping("/DeleteGameStatus")
+    public ResponseEntity<String> DeleteGameStatus(
+        @RequestParam(value = "id", defaultValue = "IDNOTFOUND") String id,
+        @RequestParam(value = "secret", defaultValue = "NOSECRET") String secret
+    ) {
+        if(!AuthorizationChecker.checkSecret(secret)) return new ResponseEntity("Nice try buddy ;)", HttpStatus.UNAUTHORIZED);
+        else if(id.equals("IDNOTFOUND")) return new ResponseEntity(id, HttpStatus.BAD_REQUEST);
+        else{
+            try {
+                Path path = Paths.get("games.json").toAbsolutePath();
+                String json = Files.readString(path, StandardCharsets.US_ASCII);
+                Gson gson = new Gson();
+                GameStatus[] games = gson.fromJson(json, GameStatus[].class);
+                GameStatus[] newGames = new GameStatus[games.length - 1];
+                boolean found = false;
+                for (int i = 0; i < games.length; i++) {
+                    int setInd = i - (found ? 1 : 0);
+                    if (games[i].getId().equals(id)) {
+                        found = true;
+                    } else if (setInd < newGames.length) {
+                        newGames[setInd] = games[i];
+                    }
+                }
+                if (!found) {
+                    return new ResponseEntity("Game with id " + id + " not found", HttpStatus.BAD_REQUEST);
+                }
+                String newJson = gson.toJson(newGames);
+                FileWriter writer = new FileWriter(path.toFile());
+                writer.write(newJson);
+                writer.close();
+                return new ResponseEntity("Game deleted", HttpStatus.OK);
+            } catch (Exception e){
+                return new ResponseEntity(e.toString(), HttpStatus.BAD_REQUEST);
+            }
         }
     }
 }
