@@ -30,7 +30,7 @@ public class GameStatusController {
         else if(id.equals("IDNOTFOUND")) return new ResponseEntity(id, HttpStatus.BAD_REQUEST);
         else{
             try {
-                Path path = Paths.get("games.json").toAbsolutePath();
+                Path path = Paths.get("games.json");
                 String json = Files.readString(path, StandardCharsets.US_ASCII);
                 Gson gson = new Gson();
                 GameStatus[] games = gson.fromJson(json, GameStatus[].class);
@@ -60,7 +60,7 @@ public class GameStatusController {
     @GetMapping("/GetAllGameStatuses")
     public ResponseEntity<List<GameStatus>> GetAllGameStatuses(){
         try {
-            Path path = Paths.get("games.json").toAbsolutePath();
+            Path path = Paths.get("games.json");
             String json = Files.readString(path, StandardCharsets.US_ASCII);
             Gson gson = new Gson();
             GameStatus[] games = gson.fromJson(json, GameStatus[].class);
@@ -75,7 +75,7 @@ public class GameStatusController {
         @RequestParam(value = "searchParam") String searchParam
     ){
         try {
-            Path path = Paths.get("games.json").toAbsolutePath();
+            Path path = Paths.get("games.json");
             String json = Files.readString(path, StandardCharsets.US_ASCII);
             Gson gson = new Gson();
             GameStatus[] games = gson.fromJson(json, GameStatus[].class);
@@ -107,7 +107,7 @@ public class GameStatusController {
         if(!AuthorizationChecker.checkSecret(secret)) return new ResponseEntity("Nice try buddy ;)", HttpStatus.UNAUTHORIZED);
         else{
             try {
-                Path path = Paths.get("games.json").toAbsolutePath();
+                Path path = Paths.get("games.json");
                 String json = Files.readString(path, StandardCharsets.US_ASCII);
                 Gson gson = new Gson();
                 ArrayList<GameStatus> games = new ArrayList<GameStatus>(Arrays.asList(gson.fromJson(json, GameStatus[].class)));
@@ -134,7 +134,7 @@ public class GameStatusController {
         if(!AuthorizationChecker.checkSecret(secret)) return new ResponseEntity("Nice try buddy ;)", HttpStatus.UNAUTHORIZED);
         else{
             try {
-                Path path = Paths.get("games.json").toAbsolutePath();
+                Path path = Paths.get("games.json");
                 String json = Files.readString(path, StandardCharsets.US_ASCII);
                 Gson gson = new Gson();
                 GameStatus[] games = gson.fromJson(json, GameStatus[].class);
@@ -169,7 +169,7 @@ public class GameStatusController {
         else if(id.equals("IDNOTFOUND")) return new ResponseEntity(id, HttpStatus.BAD_REQUEST);
         else{
             try {
-                Path path = Paths.get("games.json").toAbsolutePath();
+                Path path = Paths.get("games.json");
                 String json = Files.readString(path, StandardCharsets.US_ASCII);
                 Gson gson = new Gson();
                 GameStatus[] games = gson.fromJson(json, GameStatus[].class);
