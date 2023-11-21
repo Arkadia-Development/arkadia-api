@@ -1,6 +1,16 @@
 package com.arkadia.arkadiaapi;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(collection="cabinets")
 public class GameStatus {
+    @Id private String mongoId;
     private String id;
     private String fullTitle;
     private boolean isWorking;

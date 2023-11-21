@@ -34,3 +34,4 @@ build/
 
 ### Authorization Checker and Secret ###
 src/main/java/com/arkadia/arkadiaapi/AuthorizationChecker.java
+src/main/resources/application.properties
