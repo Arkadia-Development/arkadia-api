@@ -1,8 +1,10 @@
 package com.arkadia.arkadiaapi;
+import com.mongodb.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -11,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection="cabinets")
 public class GameStatus {
     @Id private String mongoId;
+    @Indexed(unique = true)
     private String id;
     private String fullTitle;
     private boolean isWorking;
