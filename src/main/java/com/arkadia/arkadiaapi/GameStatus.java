@@ -15,6 +15,7 @@ public class GameStatus {
     @Id private String mongoId;
     @Indexed(unique = true)
     private String id;
+    @Indexed(unique = true)
     private String fullTitle;
     private boolean isWorking;
     private String[] searchTerms;
