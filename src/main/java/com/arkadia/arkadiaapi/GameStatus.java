@@ -16,13 +16,17 @@ public class GameStatus {
     private boolean isWorking;
     private String[] searchTerms;
     private String banner; // base 64 string encoding of banner image
+    private String notes;
+    private String[] parts;
 
-    GameStatus(String id, String fullTitle, boolean isWorking, String[] searchTerms, String banner){
+    GameStatus(String id, String fullTitle, boolean isWorking, String[] searchTerms, String banner, String notes, String[] parts){
         this.id = id;
         this.fullTitle = fullTitle;
         this.isWorking = isWorking;
         this.searchTerms = searchTerms;
         this.banner = banner;
+        this.notes = notes;
+        this.parts = parts;
     }
 
     public String getId(){
@@ -39,6 +43,10 @@ public class GameStatus {
 
     public String getBanner() { return banner; }
 
+    public String getNotes() { return notes; }
+
+    public String[] getParts() { return parts; }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -52,4 +60,8 @@ public class GameStatus {
     public void setSearchTerms(String[] searchTerms) { this.searchTerms = searchTerms; }
 
     public void setBanner(String banner) { this.banner = banner; }
+
+    public void setNotes(String notes) { this.notes = notes; }
+
+    public void setParts(String[] parts) { this.parts = parts;}
 }
