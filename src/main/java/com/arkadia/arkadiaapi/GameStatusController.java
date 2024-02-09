@@ -36,8 +36,8 @@ public class GameStatusController {
         else{
             try {
                 GameStatus game = repo.findById(id);
-                if (!game.equals(null)) return new ResponseEntity("ID does not exist", HttpStatus.BAD_REQUEST);
-                game.setIsWorking(game.getIsWorking());
+                if (game == null) return new ResponseEntity("ID does not exist", HttpStatus.BAD_REQUEST);
+                game.setIsWorking(!game.getIsWorking());
                 repo.save(game);
                 return new ResponseEntity("ID updated", HttpStatus.OK);
             } catch (Exception e){
@@ -98,10 +98,11 @@ public class GameStatusController {
         else{
             try {
                 GameStatus game = repo.findById(id);
-                if (!game.equals(null)) return new ResponseEntity("ID does not exist", HttpStatus.BAD_REQUEST);
+                if (game == null) return new ResponseEntity("ID does not exist", HttpStatus.BAD_REQUEST);
                 repo.deleteById(id);
                 return new ResponseEntity("Game deleted", HttpStatus.OK);
             } catch (Exception e){
+                System.out.println(e);
                 return new ResponseEntity(e.toString(), HttpStatus.BAD_REQUEST);
             }
         }
